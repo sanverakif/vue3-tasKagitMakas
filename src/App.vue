@@ -1,10 +1,5 @@
 <template>
   <div>
-    <div class="score">
-      <div>
-        <p>{{ result }}</p>
-      </div>
-    </div>
     <div class="images">
       <div>
         <img
@@ -13,6 +8,12 @@
           @click="tasKagitMakasTikla($event)"
         />
 
+        <img
+          src="../src/assets/tas.png"
+          id="computerTas"
+          @click="tasKagitMakasTikla($event)"
+        />
+        <!-- 
         <img
           src="../src/assets/kagit.png"
           class="kagit"
@@ -23,12 +24,16 @@
           src="../src/assets/makas.png"
           class="makas"
           @click="tasKagitMakasTikla($event)"
-        />
+        /> -->
       </div>
     </div>
+    <div class="result">
+      <div>
+        <p>{{ result }}</p>
+      </div>
+    </div>
+    <div class="btnClear"><button @click="clearForm">temizle</button></div>
   </div>
-  <br />
-  <button @click="clearForm">temizle</button>
 </template>
 
 <script>
@@ -53,7 +58,6 @@ export default {
       let userMaterial = material.target.className;
       let randomMaterialNumber = Math.floor(Math.random() * 3);
       let computerMaterial = this.material[randomMaterialNumber];
-
       let userPoint = this.materialPoint[userMaterial][computerMaterial];
 
       if (userPoint == 0) {
@@ -72,6 +76,14 @@ export default {
 </script>
 
 <style>
+.btnClear {
+  display: flex;
+  justify-content: center;
+}
+.result {
+  display: flex;
+  justify-content: center;
+}
 .images {
   margin-top: 40px;
 }
