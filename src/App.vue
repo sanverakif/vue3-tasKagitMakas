@@ -1,64 +1,58 @@
 <template>
   <div>
     <div class="images">
-      <div>
-        <img
-          src="../src/assets/tas.png"
-          class="tas"
-          @click="tasKagitMakasTikla($event)"
-        />
-
-        <img
-          src="../src/assets/tas.png"
-          id="computerTas"
-          @click="tasKagitMakasTikla($event)"
-        />
-        <!-- 
-        <img
-          src="../src/assets/kagit.png"
-          class="kagit"
-          @click="tasKagitMakasTikla($event)"
-        />
-
-        <img
-          src="../src/assets/makas.png"
-          class="makas"
-          @click="tasKagitMakasTikla($event)"
-        /> -->
+      <div class="player-image">
+        <img src="@/assets/tas.png" alt="" />
       </div>
+      <div class="computer-image">
+        <img src="@/assets/tas.png" alt="" />
+      </div>
+    </div>
+    <div class="buttons">
+      <div>
+        <button @click="tasClick()">Başlat</button>
+      </div>
+      <!-- <div>
+        <button @click="clearForm">Temizle</button>
+      </div> -->
     </div>
     <div class="result">
-      <div>
-        <p>{{ result }}</p>
-      </div>
+      <p>{{ result }}</p>
     </div>
-    <div class="btnClear"><button @click="clearForm">temizle</button></div>
+    <!-- <div class="btnClear"><button @click="clearForm">temizle</button></div> -->
   </div>
 </template>
 
 <script>
+import gameService from "@/components/services/gameService";
 export default {
   name: "App",
   data() {
     return {
       result: "",
-      material: ["tas", "kagit", "makas"],
-      materialPoint: {
-        tas: { makas: 1, tas: 0.5, kagit: 0 },
-        kagit: { tas: 1, kagit: 0.5, makas: 0 },
-        makas: { kagit: 1, makas: 0.5, tas: 0 },
-      },
     };
   },
   components: {
     // Home,
   },
   methods: {
-    tasKagitMakasTikla(material) {
-      let userMaterial = material.target.className;
-      let randomMaterialNumber = Math.floor(Math.random() * 3);
-      let computerMaterial = this.material[randomMaterialNumber];
-      let userPoint = this.materialPoint[userMaterial][computerMaterial];
+    tasClick() {
+      this.tasKagitMakasTikla("tas");
+    },
+
+    tasKagitMakasTikla(userMaterial) {
+      let computerMaterial = gameService.getComputerChoice();
+      let userPoint = gameService.result(userMaterial, computerMaterial);
+
+      const computerIcon = document.querySelector(".computer-image img");
+      // computerIcon.src = `@/assets/${computerMaterial}.png`;
+
+      setTimeout(() => {
+        computerIcon.src = `../assets/${computerMaterial}.png`;
+      }, 1000);
+
+      // this.$el.querySelector(".aaa").src = "@assets/kagit.png";
+      // this.$el.querySelector(".aaa").src = `@/assets/${computerMaterial}.png`;
 
       if (userPoint == 0) {
         this.result = `${userMaterial} = 0 ${computerMaterial} = 1  Kaybettiniz`;
@@ -67,6 +61,9 @@ export default {
       } else {
         this.result = `${userMaterial} = 1 ${computerMaterial} = 0  Kazandınız`;
       }
+      setInterval(() => {
+        this.clearForm();
+      }, 1500);
     },
     clearForm() {
       this.result = "";
@@ -76,6 +73,93 @@ export default {
 </script>
 
 <style>
+button {
+  border: 1px solid goldenrod;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  outline: none;
+}
+.buttons {
+  min-height: 10vh;
+  color: white;
+  width: 50vw;
+  display: flex;
+  margin: auto;
+  align-items: center;
+  justify-content: space-around;
+}
+.buttons button {
+  background-color: goldenrod;
+  margin: 20px 20px;
+}
+.buttons button:hover {
+  background-color: rgb(233, 184, 61);
+}
+.akif {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  animation: emre 0.3s ease-in-out infinite alternate;
+}
+
+.images {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  animation: animation 0.3s ease-in-out infinite alternate;
+}
+
+@keyframes animation {
+  from {
+    transform: translateY(50px);
+  }
+  to {
+    transform: translateY(0px);
+  }
+}
+
+.player-image {
+  /* opacity: 1; */
+  transform: rotateY(180deg);
+}
+
+/* .buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+} */
+.result {
+  display: flex;
+  justify-content: center;
+}
+/* * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+} */
+/* background-size: 100% 100%; */
+/* box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px; */
+/* animation: changeImage 40s linear infinite; */
+
+/* #imgSlider {
+  width: 200px;
+  height: 200px;
+  animation: changeImage 20s;
+  background-size: 100% 100%;
+}
+
+@keyframes changeImage {
+  1% {
+    background-image: url("@/assets/tas.png");
+  }
+  2% {
+    background-image: url("@/assets/kagit.png");
+  }
+  3% {
+    background-image: url("@/assets/makas.png");
+  }
+}
 .btnClear {
   display: flex;
   justify-content: center;
@@ -83,8 +167,8 @@ export default {
 .result {
   display: flex;
   justify-content: center;
-}
-.images {
+} */
+/* .images {
   margin-top: 40px;
 }
 .tas,
@@ -94,637 +178,5 @@ export default {
 img {
   height: 200px;
   width: 200px;
-}
-@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;0,900;1,300;1,400&display=swap");
-.text-blue {
-  color: #59bacc;
-}
-
-.bg-blue {
-  background-color: #59bacc;
-}
-
-.text-green {
-  color: #58ad69;
-}
-
-.bg-green {
-  background-color: #58ad69;
-}
-
-.text-orange {
-  color: #ffbc49;
-}
-
-.bg-orange {
-  background-color: #ffbc49;
-}
-
-.text-red {
-  color: #e2574c;
-}
-
-.bg-red {
-  background-color: #e2574c;
-}
-
-.text-black {
-  color: #4e5459;
-}
-
-.bg-black {
-  background-color: #4e5459;
-}
-
-.text-default {
-  color: #d7dbdd;
-}
-
-.bg-default {
-  background-color: #d7dbdd;
-}
-
-.text-white {
-  color: #fff;
-}
-
-.bg-white {
-  background-color: #fff;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.text-left {
-  text-align: left;
-}
-
-.text-right {
-  text-align: right;
-}
-
-.d-flex {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-}
-
-.justify-content-center {
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-}
-
-.justify-content-start {
-  -webkit-box-pack: start;
-  -ms-flex-pack: start;
-  justify-content: flex-start;
-}
-
-.justify-content-between {
-  -webkit-box-pack: justify;
-  -ms-flex-pack: justify;
-  justify-content: space-between;
-}
-
-.justify-content-end {
-  -webkit-box-pack: end;
-  -ms-flex-pack: end;
-  justify-content: flex-end;
-}
-
-.align-items-center {
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-}
-
-.align-items-start {
-  -webkit-box-align: start;
-  -ms-flex-align: start;
-  align-items: flex-start;
-}
-
-.align-items-end {
-  -webkit-box-align: end;
-  -ms-flex-align: end;
-  align-items: flex-end;
-}
-
-.mt-0 {
-  margin-top: 0rem;
-}
-
-.mb-0 {
-  margin-bottom: 0rem;
-}
-
-.mr-0 {
-  margin-right: 0rem;
-}
-
-.ml-0 {
-  margin-left: 0rem;
-}
-
-.mx-0 {
-  margin-left: 0rem;
-  margin-right: 0rem;
-}
-
-.my-0 {
-  margin-top: 0rem;
-  margin-bottom: 0rem;
-}
-
-.pt-0 {
-  padding-top: 0rem;
-}
-
-.pb-0 {
-  padding-bottom: 0rem;
-}
-
-.pr-0 {
-  padding-right: 0rem;
-}
-
-.pl-0 {
-  padding-left: 0rem;
-}
-
-.px-0 {
-  padding-left: 0rem;
-  padding-right: 0rem;
-}
-
-.py-0 {
-  padding-top: 0rem;
-  padding-bottom: 0rem;
-}
-
-.mt-1 {
-  margin-top: 0.25rem;
-}
-
-.mb-1 {
-  margin-bottom: 0.25rem;
-}
-
-.mr-1 {
-  margin-right: 0.25rem;
-}
-
-.ml-1 {
-  margin-left: 0.25rem;
-}
-
-.mx-1 {
-  margin-left: 0.25rem;
-  margin-right: 0.25rem;
-}
-
-.my-1 {
-  margin-top: 0.25rem;
-  margin-bottom: 0.25rem;
-}
-
-.pt-1 {
-  padding-top: 0.25rem;
-}
-
-.pb-1 {
-  padding-bottom: 0.25rem;
-}
-
-.pr-1 {
-  padding-right: 0.25rem;
-}
-
-.pl-1 {
-  padding-left: 0.25rem;
-}
-
-.px-1 {
-  padding-left: 0.25rem;
-  padding-right: 0.25rem;
-}
-
-.py-1 {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-}
-
-.mt-2 {
-  margin-top: 0.5rem;
-}
-
-.mb-2 {
-  margin-bottom: 0.5rem;
-}
-
-.mr-2 {
-  margin-right: 0.5rem;
-}
-
-.ml-2 {
-  margin-left: 0.5rem;
-}
-
-.mx-2 {
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-}
-
-.my-2 {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.pt-2 {
-  padding-top: 0.5rem;
-}
-
-.pb-2 {
-  padding-bottom: 0.5rem;
-}
-
-.pr-2 {
-  padding-right: 0.5rem;
-}
-
-.pl-2 {
-  padding-left: 0.5rem;
-}
-
-.px-2 {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-}
-
-.py-2 {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-}
-
-.mt-3 {
-  margin-top: 0.75rem;
-}
-
-.mb-3 {
-  margin-bottom: 0.75rem;
-}
-
-.mr-3 {
-  margin-right: 0.75rem;
-}
-
-.ml-3 {
-  margin-left: 0.75rem;
-}
-
-.mx-3 {
-  margin-left: 0.75rem;
-  margin-right: 0.75rem;
-}
-
-.my-3 {
-  margin-top: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-
-.pt-3 {
-  padding-top: 0.75rem;
-}
-
-.pb-3 {
-  padding-bottom: 0.75rem;
-}
-
-.pr-3 {
-  padding-right: 0.75rem;
-}
-
-.pl-3 {
-  padding-left: 0.75rem;
-}
-
-.px-3 {
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
-}
-
-.py-3 {
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
-}
-
-.mt-4 {
-  margin-top: 1rem;
-}
-
-.mb-4 {
-  margin-bottom: 1rem;
-}
-
-.mr-4 {
-  margin-right: 1rem;
-}
-
-.ml-4 {
-  margin-left: 1rem;
-}
-
-.mx-4 {
-  margin-left: 1rem;
-  margin-right: 1rem;
-}
-
-.my-4 {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
-.pt-4 {
-  padding-top: 1rem;
-}
-
-.pb-4 {
-  padding-bottom: 1rem;
-}
-
-.pr-4 {
-  padding-right: 1rem;
-}
-
-.pl-4 {
-  padding-left: 1rem;
-}
-
-.px-4 {
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-
-.py-4 {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-}
-
-.mt-5 {
-  margin-top: 1.25rem;
-}
-
-.mb-5 {
-  margin-bottom: 1.25rem;
-}
-
-.mr-5 {
-  margin-right: 1.25rem;
-}
-
-.ml-5 {
-  margin-left: 1.25rem;
-}
-
-.mx-5 {
-  margin-left: 1.25rem;
-  margin-right: 1.25rem;
-}
-
-.my-5 {
-  margin-top: 1.25rem;
-  margin-bottom: 1.25rem;
-}
-
-.pt-5 {
-  padding-top: 1.25rem;
-}
-
-.pb-5 {
-  padding-bottom: 1.25rem;
-}
-
-.pr-5 {
-  padding-right: 1.25rem;
-}
-
-.pl-5 {
-  padding-left: 1.25rem;
-}
-
-.px-5 {
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
-}
-
-.py-5 {
-  padding-top: 1.25rem;
-  padding-bottom: 1.25rem;
-}
-
-* {
-  font-family: "Roboto", sans-serif;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-box-align: start;
-  -ms-flex-align: start;
-  align-items: flex-start;
-  background-color: #e9ebee;
-  padding: 10px;
-}
-
-body #app {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-}
-
-body #app .container {
-  border-radius: 5px;
-  width: 375px;
-  margin: 5px;
-  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-  border: 1px solid #d0d1d5;
-  background-color: white;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  padding: 5px 10px;
-}
-
-body #app .container-sm {
-  border-radius: 5px;
-  max-width: 375px !important;
-  margin: 5px;
-  -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-  border: 1px solid #d0d1d5;
-  background-color: white;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  padding: 5px 10px;
-}
-
-body #app input,
-body #app select {
-  padding: 5px;
-  outline: none;
-  width: 100%;
-  margin: 5px 0;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-body #app button {
-  border: none;
-  padding: 5px 10px;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  margin: 3px 0;
-  border-radius: 3px;
-  background-color: #d7dbdd;
-  color: #32373b;
-}
-
-body #app button:hover {
-  background-color: #f3f4f4;
-}
-
-body #app button:active {
-  background-color: #e5e7e9;
-}
-
-body #app button.black {
-  background-color: #4e5459;
-  color: #e5ffff;
-}
-
-body #app button.black:hover {
-  background-color: #363a3e;
-}
-
-body #app button.black:active {
-  background-color: #666e74;
-}
-
-body #app button.blue {
-  background-color: #59bacc;
-  color: #e5ffff;
-}
-
-body #app button.blue:hover {
-  background-color: #80cad8;
-}
-
-body #app button.blue:active {
-  background-color: #6dc2d2;
-}
-
-body #app button.red {
-  background-color: #e2574c;
-  color: #e5ffff;
-}
-
-body #app button.red:hover {
-  background-color: #e98078;
-}
-
-body #app button.red:active {
-  background-color: #e66c62;
-}
-
-body #app button.green {
-  background-color: #58ad69;
-  color: #e5ffff;
-}
-
-body #app button.green:hover {
-  background-color: #7abe88;
-}
-
-body #app button.green:active {
-  background-color: #69b578;
-}
-
-body #app button.orange {
-  background-color: #ffbc49;
-  color: #666;
-}
-
-body #app button.orange:hover {
-  background-color: #ffcf7c;
-}
-
-body #app button.orange:active {
-  background-color: #ffc563;
-}
-
-body #app button.block {
-  width: 100%;
-}
-
-body #app button.sm {
-  padding: 2px 5px;
-}
-
-body #app ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-body #app ul li {
-  padding: 5px;
-  background-color: #f3f4f4;
-  margin-bottom: 5px;
-  border-radius: 3px;
-}
-
-body #app ul li:last-child {
-  margin-bottom: 0;
-}
-
-body #app ul li:hover {
-  background-color: #e5e7e9;
-}
-
-body #app hr {
-  background: -webkit-gradient(
-    linear,
-    left top,
-    right top,
-    from(#59bacc),
-    to(#ffbc49)
-  );
-  background: linear-gradient(to right, #59bacc, #ffbc49);
-  height: 1px;
-  border: none;
-}
-
-body #app small {
-  font-size: 12px;
-}
-
-/*# sourceMappingURL=style.css.map */
+} */
 </style>
